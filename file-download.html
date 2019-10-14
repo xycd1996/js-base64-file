@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <a id="down" href="">1111</a>
+  </body>
+  <script>
+    var downLoad = document.querySelectorAll('#down')[0]
+
+    var blob = getBlob('base64Code')
+    downLoad.setAttribute('href', URL.createObjectURL(blob))
+    function getBlob(base64) {
+      return b64toBlob(getData(base64), getContentType(base64))
+    }
+
+    // 获取前缀部分
+    function getContentType(base64) {
+      return /data:([^;]*);/i.exec(base64)[1]
+    }
+
+    // 获取base64部分
+    function getData(base64) {
+      return base64.substr(base64.indexOf('base64,') + 7)
+    }
+
+    function b64toBlob(b64Data, contentType, sliceSize) {
+      contentType = contentType || ''
+      sliceSize = sliceSize || 512
+
+      var byteCharacters = atob(b64Data)
+      var byteArrays = []
+
+      for (
+        var offset = 0;
+        offset < byteCharacters.length;
+        offset += sliceSize
+      ) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize)
+
+        var byteNumbers = new Array(slice.length)
+        for (var i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i)
+        }
+
+        var byteArray = new Uint8Array(byteNumbers)
+
+        byteArrays.push(byteArray)
+        console.log(byteArrays)
+      }
+
+      var blob = new Blob(byteArrays, { type: contentType })
+      console.log(blob)
+      return blob
+    }
+  </script>
+</html>
